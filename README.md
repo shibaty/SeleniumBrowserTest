@@ -3,7 +3,7 @@ SeleniumBrowserTest
 
 BrowserTest using Selenium(with appium)
 
-External Tool
+Android Chrome Test
 -------------------
 You need install.
 
