@@ -6,12 +6,12 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.CacheLookup;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.shibaty.SeleniumBrowserTest.base.PageObjectBase;
+import org.shibaty.SeleniumBrowserTest.base.AbstractPageObject;
 
 /**
  * Google トップページ.
  */
-public class POGoogle extends PageObjectBase {
+public class POGoogle extends AbstractPageObject {
 
   /**
    * SearchBox.
@@ -23,7 +23,7 @@ public class POGoogle extends PageObjectBase {
   /**
    * コンストラクタ.<br>
    *
-   * @param driver
+   * @param driver WebDriver
    */
   public POGoogle(WebDriver driver) {
     super(driver, "http://www.google.co.jp");

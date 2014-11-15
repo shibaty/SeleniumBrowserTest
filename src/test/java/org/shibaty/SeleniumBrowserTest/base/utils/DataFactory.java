@@ -19,7 +19,7 @@ import org.apache.poi.ss.usermodel.WorkbookFactory;
 /**
  * テストデータファクトリクラス.
  */
-public class TestDataFactory {
+public class DataFactory {
 
   /**
    * テストデータがあるシート名.
@@ -35,7 +35,7 @@ public class TestDataFactory {
    * コンストラクタ.<br>
    * インスタンス生成抑止
    */
-  private TestDataFactory() {
+  private DataFactory() {
     // nop
   }
 
@@ -68,7 +68,7 @@ public class TestDataFactory {
       .append("/")
       .append(fileName);
     try (
-        InputStream is = TestDataFactory.class.getClassLoader().getResourceAsStream(
+        InputStream is = DataFactory.class.getClassLoader().getResourceAsStream(
             sb.toString())) {
       wb = WorkbookFactory.create(is);
     }

@@ -2,17 +2,17 @@
 package org.shibaty.SeleniumBrowserTest.example.pageobject;
 
 import org.openqa.selenium.WebDriver;
-import org.shibaty.SeleniumBrowserTest.base.PageObjectBase;
+import org.shibaty.SeleniumBrowserTest.base.AbstractPageObject;
 
 /**
  * Google検索結果ページ.
  */
-public class POGoogleResult extends PageObjectBase {
+public class POGoogleResult extends AbstractPageObject {
 
   /**
    * コンストラクタ.<br>
    *
-   * @param driver
+   * @param driver WebDriver
    */
   public POGoogleResult(WebDriver driver) {
     super(driver, null);
@@ -21,10 +21,10 @@ public class POGoogleResult extends PageObjectBase {
   /**
    * {@inheritDoc}
    *
-   * @see org.shibaty.SeleniumBrowserTest.base.PageObjectBase#back()
+   * @see org.shibaty.SeleniumBrowserTest.base.AbstractPageObject#back()
    */
   @Override
-  public <T extends PageObjectBase> T back() {
+  public <T extends AbstractPageObject> T back() {
     super.back();
     return new POGoogle(driver).initElements();
   }

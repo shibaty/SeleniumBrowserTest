@@ -11,15 +11,15 @@ import java.util.Map;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.junit.Test;
 import org.openqa.selenium.WebDriver;
-import org.shibaty.SeleniumBrowserTest.base.SeleniumBrowserTestBase;
-import org.shibaty.SeleniumBrowserTest.base.utils.TestDataFactory;
+import org.shibaty.SeleniumBrowserTest.base.AbstractSeleniumBrowserTest;
+import org.shibaty.SeleniumBrowserTest.base.utils.DataFactory;
 import org.shibaty.SeleniumBrowserTest.example.pageobject.POGoogle;
 import org.shibaty.SeleniumBrowserTest.example.pageobject.POGoogleResult;
 
 /**
  * サンプルテストケース.<br>
  */
-public class SeleniumBrowserTestSample extends SeleniumBrowserTestBase {
+public class GoogleTest extends AbstractSeleniumBrowserTest {
 
   /**
    * テストケース.<br>
@@ -31,7 +31,7 @@ public class SeleniumBrowserTestSample extends SeleniumBrowserTestBase {
 
     // テストデータの取得
     try {
-      List<Map<String, String>> testDataList = TestDataFactory
+      List<Map<String, String>> testDataList = DataFactory
           .getTestData("example.xlsx");
 
       String value = testDataList.get(0).get("test_data1");

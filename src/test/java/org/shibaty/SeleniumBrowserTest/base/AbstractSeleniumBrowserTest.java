@@ -34,7 +34,7 @@ import org.shibaty.SeleniumBrowserTest.base.utils.Settings;
 /**
  * Seleniumによるブラウザテストのベースクラス.<br>
  */
-public class SeleniumBrowserTestBase {
+public abstract class AbstractSeleniumBrowserTest {
 
   /**
    * Web Driver.
@@ -54,7 +54,7 @@ public class SeleniumBrowserTestBase {
   /**
    * コンストラクタ.<br>
    */
-  public SeleniumBrowserTestBase() {
+  public AbstractSeleniumBrowserTest() {
     target = TargetBrowser.fromString(Settings.getInstance().getTestTarget());
   }
 

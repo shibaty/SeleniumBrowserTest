@@ -9,7 +9,7 @@ import org.shibaty.SeleniumBrowserTest.base.utils.Settings;
 /**
  * PageObjectのベースクラス.
  */
-public abstract class PageObjectBase {
+public abstract class AbstractPageObject {
 
   /**
    * WebDriver.
@@ -25,8 +25,9 @@ public abstract class PageObjectBase {
    * コンストラクタ.<br>
    *
    * @param driver WebDriver
+   * @param uri 対象ページのURI
    */
-  public PageObjectBase(WebDriver driver, String uri) {
+  public AbstractPageObject(WebDriver driver, String uri) {
     this.driver = driver;
     this.uri = uri;
   }
@@ -43,9 +44,10 @@ public abstract class PageObjectBase {
   /**
    * ページを開く.<br>
    *
+   * @param <T> PageObjectの派生クラス
    * @return PageObject
    */
-  public <T extends PageObjectBase> T open() {
+  public <T extends AbstractPageObject> T open() {
     driver.get(uri);
     return initElements();
   }
@@ -53,10 +55,11 @@ public abstract class PageObjectBase {
   /**
    * Elementを初期化.<br>
    *
+   * @param <T> PageObjectの派生クラス
    * @return PageObject
    */
   @SuppressWarnings("unchecked")
-  public <T extends PageObjectBase> T initElements() {
+  public <T extends AbstractPageObject> T initElements() {
     return (T) PageFactory.initElements(driver, this.getClass());
   }
 
@@ -64,9 +67,10 @@ public abstract class PageObjectBase {
    * 「戻る」を行う.<br>
    * 派生クラスにて返却するPageObjectを定義すること
    *
+   * @param <T> PageObjectの派生クラス
    * @return PageObject
    */
-  public <T extends PageObjectBase> T back() {
+  public <T extends AbstractPageObject> T back() {
     driver.navigate().back();
     return null;
   }
@@ -75,9 +79,10 @@ public abstract class PageObjectBase {
    * 「進む」を行う.<br>
    * 派生クラスにて返却するPageObjectを定義すること
    *
+   * @param <T> PageObjectの派生クラス
    * @return PageObject
    */
-  public <T extends PageObjectBase> T forward() {
+  public <T extends AbstractPageObject> T forward() {
     driver.navigate().forward();
     return null;
   }
@@ -85,9 +90,10 @@ public abstract class PageObjectBase {
   /**
    * 「更新」を行う.<br>
    *
+   * @param <T> PageObjectの派生クラス
    * @return PageObject
    */
-  public <T extends PageObjectBase> T refresh() {
+  public <T extends AbstractPageObject> T refresh() {
     driver.navigate().refresh();
     return initElements();
   }
