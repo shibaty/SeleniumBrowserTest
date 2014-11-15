@@ -10,38 +10,39 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import org.shibaty.SeleniumBrowserTest.base.PageObjectBase;
 
 /**
- * @author Yasutaka
+ * Google トップページ.
  */
 public class POGoogle extends PageObjectBase {
 
-    /**
-     * SearchBox.
-     */
-    @FindBy(name = "q")
-    @CacheLookup
-    private WebElement _weSearch;
+  /**
+   * SearchBox.
+   */
+  @FindBy(name = "q")
+  @CacheLookup
+  private WebElement _weSearch;
 
-    /**
-     * コンストラクタ.<br>
-     *
-     * @param driver
-     */
-    public POGoogle(WebDriver driver) {
-        super(driver);
-        uri = "http://www.google.co.jp";
-    }
+  /**
+   * コンストラクタ.<br>
+   *
+   * @param driver
+   */
+  public POGoogle(WebDriver driver) {
+    super(driver);
+    uri = "http://www.google.co.jp";
+  }
 
-    /**
-     * 検索.<br>
-     * @param query 検索文字列
-     * @return 検索結果ページ(PageObject)
-     */
-    public POGoogleResult search(String query) {
-        _weSearch.sendKeys(query + "\n");
+  /**
+   * 検索.<br>
+   *
+   * @param query 検索文字列
+   * @return 検索結果ページ(PageObject)
+   */
+  public POGoogleResult search(String query) {
+    _weSearch.sendKeys(query + "\n");
 
-        (new WebDriverWait(_driver, WAIT_PREVIEW_SECOND)).until(
-                ExpectedConditions.titleContains(query));
+    (new WebDriverWait(_driver, WAIT_PREVIEW_SECOND)).until(
+        ExpectedConditions.titleContains(query));
 
-        return new POGoogleResult(_driver).initElements();
-    }
+    return new POGoogleResult(_driver).initElements();
+  }
 }
