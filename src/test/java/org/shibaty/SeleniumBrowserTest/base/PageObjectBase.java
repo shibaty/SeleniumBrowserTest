@@ -3,22 +3,18 @@ package org.shibaty.SeleniumBrowserTest.base;
 
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.PageFactory;
+import org.openqa.selenium.support.ui.WebDriverWait;
+import org.shibaty.SeleniumBrowserTest.base.utils.Settings;
 
 /**
  * PageObjectのベースクラス.
- *
  */
 public abstract class PageObjectBase {
 
   /**
-   * wait for Preview(Second).
-   */
-  protected static final int WAIT_PREVIEW_SECOND = 5;
-
-  /**
    * WebDriver.
    */
-  protected final WebDriver _driver;
+  protected final WebDriver driver;
 
   /**
    * URI. 派生クラスのコンストラクタで定義すること
@@ -30,8 +26,9 @@ public abstract class PageObjectBase {
    *
    * @param driver WebDriver
    */
-  public PageObjectBase(WebDriver driver) {
-    _driver = driver;
+  public PageObjectBase(WebDriver driver, String uri) {
+    this.driver = driver;
+    this.uri = uri;
   }
 
   /**
@@ -40,7 +37,7 @@ public abstract class PageObjectBase {
    * @return タイトル
    */
   public String getTitle() {
-    return _driver.getTitle();
+    return driver.getTitle();
   }
 
   /**
@@ -49,7 +46,7 @@ public abstract class PageObjectBase {
    * @return PageObject
    */
   public <T extends PageObjectBase> T open() {
-    _driver.get(uri);
+    driver.get(uri);
     return initElements();
   }
 
@@ -60,7 +57,7 @@ public abstract class PageObjectBase {
    */
   @SuppressWarnings("unchecked")
   public <T extends PageObjectBase> T initElements() {
-    return (T) PageFactory.initElements(_driver, this.getClass());
+    return (T) PageFactory.initElements(driver, this.getClass());
   }
 
   /**
@@ -70,7 +67,7 @@ public abstract class PageObjectBase {
    * @return PageObject
    */
   public <T extends PageObjectBase> T back() {
-    _driver.navigate().back();
+    driver.navigate().back();
     return null;
   }
 
@@ -81,7 +78,7 @@ public abstract class PageObjectBase {
    * @return PageObject
    */
   public <T extends PageObjectBase> T forward() {
-    _driver.navigate().forward();
+    driver.navigate().forward();
     return null;
   }
 
@@ -91,8 +88,16 @@ public abstract class PageObjectBase {
    * @return PageObject
    */
   public <T extends PageObjectBase> T refresh() {
-    _driver.navigate().refresh();
+    driver.navigate().refresh();
     return initElements();
   }
 
+  /**
+   * 表示待ちを行う.<br>
+   *
+   * @return WebDriverWait
+   */
+  public WebDriverWait waitPreview() {
+    return new WebDriverWait(driver, Settings.getInstance().getTestWindowPreviewWait());
+  }
 }

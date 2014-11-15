@@ -1,11 +1,8 @@
-/**
- *
- */
 
 package org.shibaty.SeleniumBrowserTest.base.utils;
 
-import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -20,34 +17,71 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 
 /**
- * @author Yasutaka
+ * テストデータファクトリクラス.
  */
 public class TestDataFactory {
 
+  /**
+   * テストデータがあるシート名.
+   */
   private static final String SHEET_NAME = "testdata";
 
+  /**
+   * テストデータがあるresources配下のパス.
+   */
+  private static final String TESTDATA_PATH = "testdata";
+
+  /**
+   * コンストラクタ.<br>
+   * インスタンス生成抑止
+   */
   private TestDataFactory() {
     // nop
   }
 
-  public static List<Map<String, String>> getTestData(String path)
+  /**
+   * テストデータ取得.<br>
+   *
+   * @param fileName ファイル名
+   * @return テストデータリスト
+   * @throws InvalidFormatException ファイルフォーマット不正
+   * @throws IOException ファイルが存在しない等
+   */
+  public static List<Map<String, String>> getTestData(String fileName)
       throws InvalidFormatException, IOException {
-    return getTestData(open(path).getSheet(SHEET_NAME));
+    return getTestData(open(fileName).getSheet(SHEET_NAME));
   }
 
+  /**
+   * Workbookを開く.<br>
+   *
+   * @param fileName ファイル名.
+   * @return Workbook
+   * @throws InvalidFormatException ファイルフォーマット不正
+   * @throws IOException ファイルが存在しない等
+   */
   private static Workbook open(String fileName)
       throws InvalidFormatException, IOException {
     Workbook wb = null;
-    String path = TestDataFactory.class.getClassLoader().getResource("xlsx/" + fileName).getPath();
-
+    StringBuilder sb = new StringBuilder();
+    sb.append(TESTDATA_PATH)
+      .append("/")
+      .append(fileName);
     try (
-        FileInputStream fis = new FileInputStream(path)) {
-      wb = WorkbookFactory.create(fis);
+        InputStream is = TestDataFactory.class.getClassLoader().getResourceAsStream(
+            sb.toString())) {
+      wb = WorkbookFactory.create(is);
     }
-
     return wb;
   }
 
+  /**
+   * テストデータを取得.<br>
+   *
+   * @param sheet Sheet
+   * @return テストデータリスト.
+   * @throws InvalidFormatException フォーマット不正
+   */
   private static List<Map<String, String>> getTestData(Sheet sheet)
       throws InvalidFormatException {
 
@@ -57,7 +91,7 @@ public class TestDataFactory {
     Iterator<Row> itRow = sheet.rowIterator();
 
     if (!itRow.hasNext()) {
-      // シートが不正
+      // フォーマットが不正
       throw new InvalidFormatException("Nothing header.");
     }
 
@@ -82,7 +116,6 @@ public class TestDataFactory {
       }
       list.add(map);
     }
-
     return list;
   }
 }

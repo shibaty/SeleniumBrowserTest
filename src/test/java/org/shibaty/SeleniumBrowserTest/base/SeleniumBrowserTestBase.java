@@ -22,16 +22,14 @@ import javax.imageio.ImageIO;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.openqa.selenium.Dimension;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.ie.InternetExplorerDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
+import org.shibaty.SeleniumBrowserTest.base.utils.Settings;
 
 /**
  * Seleniumによるブラウザテストのベースクラス.<br>
@@ -39,52 +37,25 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 public class SeleniumBrowserTestBase {
 
   /**
-   * Appium Version.
-   */
-  private static final String APPIUM_VERSION = "1.2.4";
-
-  /**
-   * Appium RemoteWebDriver URL.
-   */
-  private static final String APPIUM_URL = "http://127.0.0.1:4723/wd/hub";
-
-  /**
-   * Target Android Version.
-   */
-  private static final String TARGET_ANDROID_VERSION = "4.1";
-
-  /**
-   * wait for Scroll(MilliSecond).
-   */
-  private static final long WAIT_SCROLL_MILLISECOND = 300;
-
-  /**
-   * Windows Size.
-   */
-  private static final Dimension WINDOW_SIZE = new Dimension(500, 768);
-
-  /**
    * Web Driver.
    */
-  private WebDriver _driver;
+  private WebDriver driver;
 
   /**
    * Target Browser for this.
    */
-  private TargetBrowser _target;
+  private TargetBrowser target;
 
   /**
    * Screenshot Directory.
    */
-  private static Path _screenshotDir;
+  private static Path screenshotDir;
 
   /**
    * コンストラクタ.<br>
-   *
-   * @param target 試験対象ブラウザ
    */
-  public SeleniumBrowserTestBase(TargetBrowser target) {
-    _target = target;
+  public SeleniumBrowserTestBase() {
+    target = TargetBrowser.fromString(Settings.getInstance().getTestTarget());
   }
 
   /**
@@ -92,21 +63,12 @@ public class SeleniumBrowserTestBase {
    */
   @BeforeClass
   public static void createScreenshotDir() {
-    _screenshotDir = Paths.get(new SimpleDateFormat("'ss'/yyyyMMddHHmmss").format(new Date()));
+    screenshotDir = Paths.get(new SimpleDateFormat("'ss'/yyyyMMddHHmmss").format(new Date()));
     try {
-      Files.createDirectories(_screenshotDir);
+      Files.createDirectories(screenshotDir);
     } catch (IOException e) {
       e.printStackTrace();
     }
-  }
-
-  /**
-   * システムプロパティ設定.<br>
-   */
-  @BeforeClass
-  public static void setProperties() {
-    System.setProperty("webdriver.chrome.driver", "./driver/chromedriver.exe");
-    System.setProperty("webdriver.ie.driver", "./driver/IEDriverServer.exe");
   }
 
   /**
@@ -114,50 +76,42 @@ public class SeleniumBrowserTestBase {
    */
   @Before
   public void createDriver() {
-    if (_target == TargetBrowser.IE) {
-      // use IEDriverServer
+    Settings settings = Settings.getInstance();
+
+    DesiredCapabilities capabilities = null;
+    if (target == TargetBrowser.IE) {
       // IE11で実施する場合は、インターネットオプション->セキュリティの
       // インターネットと制限付きサイトの保護モードを無効化すること。
       // レジストリの変更は不要。
-      DesiredCapabilities capabilities = DesiredCapabilities.internetExplorer();
+      capabilities = DesiredCapabilities.internetExplorer();
       capabilities.setCapability(InternetExplorerDriver.IGNORE_ZOOM_SETTING, true);
       capabilities.setCapability(InternetExplorerDriver.NATIVE_EVENTS, false);
       capabilities.setCapability(
           InternetExplorerDriver.INTRODUCE_FLAKINESS_BY_IGNORING_SECURITY_DOMAINS,
           true);
-
-      _driver = new InternetExplorerDriver(capabilities);
-    } else if (_target == TargetBrowser.FIREFOX) {
-      // use Selenium Default Driver
-      _driver = new FirefoxDriver();
-    } else if (_target == TargetBrowser.CHROME) {
-      // Use ChromeDriver
-      _driver = new ChromeDriver();
-    } else if (_target == TargetBrowser.ANDROID_CHROME
-        || _target == TargetBrowser.ANDROID_BROWSER) {
+    } else if (target == TargetBrowser.FIREFOX) {
+      capabilities = DesiredCapabilities.firefox();
+    } else if (target == TargetBrowser.CHROME) {
+      capabilities = DesiredCapabilities.chrome();
+    } else if (target == TargetBrowser.ANDROID_CHROME) {
       // Use Appium
-      DesiredCapabilities capabilities = new DesiredCapabilities();
-      capabilities.setCapability("appium-version", APPIUM_VERSION);
+      capabilities = new DesiredCapabilities();
+      capabilities.setCapability("appium-version", settings.getAppiumVersion());
       capabilities.setCapability("deviceName", "Android");
       capabilities.setCapability("platformName", "Android");
-      capabilities.setCapability("platformVersion", TARGET_ANDROID_VERSION);
-      if (_target == TargetBrowser.ANDROID_CHROME) {
-        capabilities.setCapability("browserName", "Chrome");
-      } else {
-        // 標準ブラウザはうまく動かない
-        capabilities.setCapability("browserName", "Browser");
-      }
-
-      try {
-        _driver = new RemoteWebDriver(new URL(APPIUM_URL), capabilities);
-      } catch (MalformedURLException e) {
-        e.printStackTrace();
-      }
+      capabilities.setCapability("platformVersion", settings.getAppiumAndroidVersion());
+      capabilities.setCapability("browserName", "Chrome");
     }
 
-    if (_target != TargetBrowser.ANDROID_CHROME && _target != TargetBrowser.ANDROID_BROWSER) {
+    try {
+      driver = new RemoteWebDriver(new URL(settings.getHubUri()), capabilities);
+    } catch (MalformedURLException e) {
+      e.printStackTrace();
+    }
+
+    if (target != TargetBrowser.ANDROID_CHROME) {
       // excepted Android
-      _driver.manage().window().setSize(WINDOW_SIZE);
+      driver.manage().window().setSize(settings.getTestWindowSize());
     }
   }
 
@@ -166,7 +120,7 @@ public class SeleniumBrowserTestBase {
    */
   @After
   public void quitDriver() {
-    _driver.quit();
+    driver.quit();
   }
 
   /**
@@ -175,7 +129,7 @@ public class SeleniumBrowserTestBase {
    * @return WebDriver
    */
   public WebDriver getDriver() {
-    return _driver;
+    return driver;
   }
 
   /**
@@ -187,7 +141,7 @@ public class SeleniumBrowserTestBase {
     StackTraceElement el = Thread.currentThread().getStackTrace()[2];
     String className = el.getClassName();
     String methodName = el.getMethodName();
-    String pageTitle = _driver.getTitle();
+    String pageTitle = driver.getTitle();
 
     StringBuilder sb = new StringBuilder();
     return sb.append("ss_")
@@ -203,18 +157,17 @@ public class SeleniumBrowserTestBase {
   /**
    * スクリーンショットの保存.<br>
    *
-   * @param driver WebDriver
    * @param filename ファイル名
    */
   protected void saveScreenshot(String filename) {
-    if (_driver instanceof TakesScreenshot) {
+    if (driver instanceof TakesScreenshot) {
       // 実装している場合のみ実施する
 
-      TakesScreenshot screen = (TakesScreenshot) _driver;
-      Path capture = _screenshotDir.resolve(filename);
+      TakesScreenshot screen = (TakesScreenshot) driver;
+      Path capture = screenshotDir.resolve(filename);
       try {
         byte[] screenshotData;
-        if (_target == TargetBrowser.CHROME || _target == TargetBrowser.ANDROID_CHROME) {
+        if (target == TargetBrowser.CHROME || target == TargetBrowser.ANDROID_CHROME) {
           screenshotData = getScreenshotForChrome();
         } else {
           screenshotData = screen.getScreenshotAs(OutputType.BYTES);
@@ -232,12 +185,11 @@ public class SeleniumBrowserTestBase {
   /**
    * Chrome用にスクロールしながら画面全体のスクリーンショットを取得.<br>
    *
-   * @param driver WebDriber
    * @return スクリーンショット
    */
   private byte[] getScreenshotForChrome() {
-    JavascriptExecutor executor = (JavascriptExecutor) _driver;
-    TakesScreenshot screen = (TakesScreenshot) _driver;
+    JavascriptExecutor executor = (JavascriptExecutor) driver;
+    TakesScreenshot screen = (TakesScreenshot) driver;
 
     // スクロールバーを消す
     executor.executeScript("document.body.style.overflow = 'hidden';");
@@ -280,11 +232,10 @@ public class SeleniumBrowserTestBase {
 
         executor.executeScript("window.scrollBy(" + xDiff + "," + yDiff + ");");
         try {
-          Thread.sleep(WAIT_SCROLL_MILLISECOND);
+          Thread.sleep(Settings.getInstance().getTestWindowScrollWait());
         } catch (InterruptedException e) {
           e.printStackTrace();
         }
-
       }
 
       byte[] buf = screen.getScreenshotAs(OutputType.BYTES);

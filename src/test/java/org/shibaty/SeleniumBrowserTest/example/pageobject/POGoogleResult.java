@@ -15,7 +15,7 @@ public class POGoogleResult extends PageObjectBase {
    * @param driver
    */
   public POGoogleResult(WebDriver driver) {
-    super(driver);
+    super(driver, null);
   }
 
   /**
@@ -26,7 +26,7 @@ public class POGoogleResult extends PageObjectBase {
   @Override
   public <T extends PageObjectBase> T back() {
     super.back();
-    return new POGoogle(_driver).initElements();
+    return new POGoogle(driver).initElements();
   }
 
 }

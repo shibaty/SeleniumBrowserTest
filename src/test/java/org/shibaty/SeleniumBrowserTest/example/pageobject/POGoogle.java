@@ -6,7 +6,6 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.CacheLookup;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
 import org.shibaty.SeleniumBrowserTest.base.PageObjectBase;
 
 /**
@@ -19,7 +18,7 @@ public class POGoogle extends PageObjectBase {
    */
   @FindBy(name = "q")
   @CacheLookup
-  private WebElement _weSearch;
+  private WebElement weSearch;
 
   /**
    * コンストラクタ.<br>
@@ -27,8 +26,7 @@ public class POGoogle extends PageObjectBase {
    * @param driver
    */
   public POGoogle(WebDriver driver) {
-    super(driver);
-    uri = "http://www.google.co.jp";
+    super(driver, "http://www.google.co.jp");
   }
 
   /**
@@ -38,11 +36,11 @@ public class POGoogle extends PageObjectBase {
    * @return 検索結果ページ(PageObject)
    */
   public POGoogleResult search(String query) {
-    _weSearch.sendKeys(query + "\n");
+    weSearch.sendKeys(query + "\n");
 
-    (new WebDriverWait(_driver, WAIT_PREVIEW_SECOND)).until(
+    waitPreview().until(
         ExpectedConditions.titleContains(query));
 
-    return new POGoogleResult(_driver).initElements();
+    return new POGoogleResult(driver).initElements();
   }
 }

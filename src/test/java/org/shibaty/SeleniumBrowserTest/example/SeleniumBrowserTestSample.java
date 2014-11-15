@@ -12,24 +12,14 @@ import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.junit.Test;
 import org.openqa.selenium.WebDriver;
 import org.shibaty.SeleniumBrowserTest.base.SeleniumBrowserTestBase;
-import org.shibaty.SeleniumBrowserTest.base.TargetBrowser;
 import org.shibaty.SeleniumBrowserTest.base.utils.TestDataFactory;
 import org.shibaty.SeleniumBrowserTest.example.pageobject.POGoogle;
 import org.shibaty.SeleniumBrowserTest.example.pageobject.POGoogleResult;
 
 /**
  * サンプルテストケース.<br>
- *
- * @author Yasutaka
  */
 public class SeleniumBrowserTestSample extends SeleniumBrowserTestBase {
-
-  /**
-   * コンストラクタ.<br>
-   */
-  public SeleniumBrowserTestSample() {
-    super(TargetBrowser.CHROME);
-  }
 
   /**
    * テストケース.<br>
