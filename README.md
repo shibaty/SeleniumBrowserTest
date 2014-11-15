@@ -3,13 +3,16 @@ SeleniumBrowserTest
 
 BrowserTest using Selenium(with appium)
 
-<h2>External Tool</h2>
+External Tool
+-------------------
 You need install.
 
 - Appium http://appium.io/
 
-<h2>External WebDriver</h2> 
-${project}/driver installed.
+PC Browser Test 
+-------------------
+
+Server/launch.cmd is Launch Selenium Hub/Node
 
 - chromeDriver https://sites.google.com/a/chromium.org/chromedriver/
 - IEDriverServer https://code.google.com/p/selenium/wiki/InternetExplorerDriver
