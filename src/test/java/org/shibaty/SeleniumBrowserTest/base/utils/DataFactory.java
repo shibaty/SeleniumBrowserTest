@@ -4,8 +4,8 @@ package org.shibaty.SeleniumBrowserTest.base.utils;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -103,14 +103,15 @@ public class DataFactory {
 
     // データの取得
     while (itRow.hasNext()) {
-      Map<String, String> map = new HashMap<String, String>();
+      Map<String, String> map = new LinkedHashMap<String, String>();
 
       Row row = itRow.next();
       Iterator<Cell> itCell = row.cellIterator();
       for (String key : keyList) {
         String value = null;
         if (itCell.hasNext()) {
-          value = itCell.next().getStringCellValue();
+          value = itCell.next().getStringCellValue()
+              ;
         }
         map.put(key, value);
       }
